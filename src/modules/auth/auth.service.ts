@@ -6,14 +6,20 @@ import type { PublicUser } from './auth.types';
 
 const SALT_ROUNDS = 12;
 
-export const registerUser = async (email: string, password: string): Promise<PublicUser> => {
+export const registerUser = async (
+  email: string,
+  password: string,
+  name: string,
+): Promise<{ user: PublicUser; token: string }> => {
   const existing = await findUserByEmail(email);
   if (existing) {
     throw new ApiError(409, 'Email already registered');
   }
 
   const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
-  return createUser(email, password_hash);
+  const user = await createUser(email, password_hash, name);
+  const token = signToken({ userId: user.id });
+  return { user, token };
 };
 
 export const loginUser = async (
@@ -31,5 +37,5 @@ export const loginUser = async (
   }
 
   const token = signToken({ userId: user.id });
-  return { user: { id: user.id, email: user.email, created_at: user.created_at }, token };
+  return { user: { id: user.id, email: user.email, name: user.name, created_at: user.created_at }, token };
 };

@@ -13,8 +13,16 @@ const parseDurationMs = (duration: string): number => {
 };
 
 export const register = async (req: Request, res: Response) => {
-  const { email, password } = req.body as { email: string; password: string };
-  const user = await registerUser(email, password);
+  const { email, password, name } = req.body as { email: string; password: string; name: string };
+  const { user, token } = await registerUser(email, password, name);
+
+  res.cookie(env.COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: parseDurationMs(env.JWT_EXPIRES_IN),
+  });
+
   res.status(201).json(ApiResponse.success(user, 'User registered successfully'));
 };
 
