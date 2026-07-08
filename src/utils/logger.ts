@@ -18,10 +18,10 @@ const timestamp = (): string => new Date().toISOString();
 
 export const logger = {
   debug: (msg: string, ...args: unknown[]) => {
-    if (shouldLog('debug')) console.debug(`[${timestamp()}] [DEBUG] ${msg}`, ...args);
+    if (shouldLog('debug')) console.log(`[${timestamp()}] [DEBUG] ${msg}`, ...args);
   },
   info: (msg: string, ...args: unknown[]) => {
-    if (shouldLog('info')) console.info(`[${timestamp()}] [INFO] ${msg}`, ...args);
+    if (shouldLog('info')) console.log(`[${timestamp()}] [INFO] ${msg}`, ...args);
   },
   warn: (msg: string, ...args: unknown[]) => {
     if (shouldLog('warn')) console.warn(`[${timestamp()}] [WARN] ${msg}`, ...args);
